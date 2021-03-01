@@ -37,7 +37,7 @@ router.post('/api/workouts', (req, res) => {
   })
 })
 
-
+//get workout
 router.get('/api/workouts/range', (req, res) =>{
   Workout.find({})
   .then(dbWorkout =>{
