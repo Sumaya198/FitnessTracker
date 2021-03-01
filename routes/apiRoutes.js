@@ -1,40 +1,58 @@
-//dependency files
-const express = require('express');
-//we want the router portion of express
-const router = express.Router()
-const path = require('path');
-
-//import models
-
-const Fitness = require('../models/fitness')
+const router = require("express").Router();
+const Workout = require("../models/workout.js");
 
 
-//action plan:
-//Add exercises to most recent workout
-//(POST/updateOne)
 
-//Add exercises to a new workout plan
-//(POST)
-
-//view the combined weight of multiple exercises from the past seven workouts on the stats page
-//(GET)
-
-//view total workout duration of each workout from the past seven workouts on the stats page.
-//(GET)
-
-module.exports = function(app) {
-router.get("/api/workouts", (req, res) => {
-    //responses will be in json because they have /api
-    res.sendFile(path.join(__dirname, './public/api'))
-})
-router.post("/api/workouts", (req, res) =>{
-    res.sendFile(path.join(__dirname, './public/api'))
-})
-router.put("/api/workouts", (req, res) => {
-    res.sendFile(path.join(__dirname, './public/api'))
+router.put('/api/workouts/:id', (req, res) =>{
+  console.log(req.body);
+  Workout.findByIdAndUpdate(req.params.id, {
+    $match: {
+      exercise: req.body
+    }
+  })
+  .then(dbWorkout => {
+    res.json(dbWorkout)
+  })
+  .catch(err => {
+    console.log(err)
+  })
 })
 
-}
 
-module.exports = router
+router.get('/api/workouts', (req, res) => {
+  Workout.find()
+  .then(dbWorkout => {
+    res.json(dbWorkout)
+  })
+  .catch(err => {
+    console.log(err)
+  });
+});
+
+
+router.post('/api/workouts', (req, res) => {
+  Workout.create(req.body)
+  .then(dbWorkout =>{
+    res.json(dbWorkout)
+  })
+})
+
+
+router.get('/api/workouts/range', (req, res) =>{
+  Workout.find({})
+  .then(dbWorkout =>{
+    console.log(dbWorkout);
+    res.json(dbWorkout)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+})
+
+module.exports = router;
+
+
+
+
+
 

@@ -1,38 +1,30 @@
-const express = require('express');
-const dotEnv = require('dotenv');
-const mongoose = require('mongoose');
-//const morgan = require('morgan');
-const path = require('path')
-const dbConnection = require('./models/connection')
+const express = require("express");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 
-dotEnv.config();
+const PORT = process.env.PORT || 4000;
 
-const PORT = process.env.PORT || 3000;
+const app = express();
 
-//db connection
-dbConnection()
+app.use(logger("dev"));
 
-
-
-const app = express()
-
-//set up middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static("public"));
 
+const URI = process.env.MONGODB_URI || "mongodb://localhost/workout"
 
-// const fitnessRouter = require('./routes/apiRoutes')
-// app.use('/api/workouts', fitnessRouter)
+mongoose.connect(URI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useFindAndModify: false
+});
 
-// app.get('/exercise', (req, res) => {
-//     res.sendFile(path.join(__dirname, "../public/exercise.html"));
-// })
+// routes
+app.use(require("./routes/apiRoutes.js"));
+app.use(require("./routes/html.js"));
 
-require('./routes/html')(app)
-
-app.listen(PORT, () =>{
-
-console.log(`Server listening on port ${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}!`);
+});
