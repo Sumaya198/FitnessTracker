@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 app.use(logger("dev"));
-//middleware
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -15,7 +15,7 @@ app.use(express.static("public"));
 
 
 mongoose.connect(
-  process.env.MONGODB_URI || 'mongodb://localhost/Fitness-Tracker',
+  process.env.MONGODB_URI || 'mongodb://localhost/workout',
   {
   useNewUrlParser: true,
   useUnifiedTopology: true,
